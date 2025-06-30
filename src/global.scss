@@ -126,3 +126,11 @@ ion-button {
   font-weight: normal;
   font-style: normal;
 }
+
+body.scanner-active {
+  background: transparent !important;
+}
+
+html, body, app-root {
+  height: 100%;
+}

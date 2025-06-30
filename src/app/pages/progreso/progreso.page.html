@@ -1,56 +1,39 @@
-<ion-header [translucent]="true">
+<ion-header translucent>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/"></ion-back-button>
+      <ion-back-button defaultHref="/home"></ion-back-button>
     </ion-buttons>
     <ion-title>Progreso de Lectura</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" class="ion-padding">
   <!-- Información del libro -->
-  <ion-card>
-    <ion-card-content>
-      <div class="book-info">
-        <img [src]="currentBook.coverUrl" alt="Portada del libro" class="book-cover">
-        <div class="book-details">
-          <h2>{{ currentBook.title }}</h2>
-          <p>{{ currentBook.author }}</p>
-          <p>{{ currentBook.totalPages }} páginas</p>
-        </div>
-      </div>
-    </ion-card-content>
-  </ion-card>
-
-  <!-- Progreso actual -->
-  <ion-card>
+  <ion-card *ngIf="currentBook">
     <ion-card-header>
-      <ion-card-title>Progreso Actual</ion-card-title>
+      <ion-card-title>{{ currentBook.title }}</ion-card-title>
+      <ion-card-subtitle>{{ currentBook.author }}</ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
-      <div class="progress-info">
-        <h3>{{ progressForm.currentPage }} / {{ currentBook.totalPages }} páginas</h3>
-        <ion-progress-bar 
-          [value]="progressPercentage / 100" 
-          [color]="getProgressColor()">
-        </ion-progress-bar>
-        <p class="progress-text">{{ progressPercentage.toFixed(1) }}% completado</p>
-      </div>
+      <p><strong>Total de páginas:</strong> {{ currentBook.totalPages }}</p>
+      <p><strong>Estado:</strong> 
+        <ion-chip [color]="getProgressColor()">{{ currentBook.estado | titlecase }}</ion-chip>
+      </p>
     </ion-card-content>
   </ion-card>
 
-  <!-- Formulario para actualizar progreso -->
-  <ion-card>
+  <!-- Formulario de progreso -->
+  <ion-card *ngIf="currentBook">
     <ion-card-header>
       <ion-card-title>Actualizar Progreso</ion-card-title>
     </ion-card-header>
     <ion-card-content>
       <ion-item>
         <ion-label position="stacked">Página actual</ion-label>
-        <ion-input 
-          type="number" 
+        <ion-input
+          type="number"
           [(ngModel)]="progressForm.currentPage"
-          (ionInput)="onPageChange()"
+          (ngModelChange)="onPageInputChange()"
           [min]="0"
           [max]="currentBook.totalPages"
           placeholder="Ingresa la página actual">
@@ -59,59 +42,110 @@
 
       <ion-item>
         <ion-label position="stacked">Fecha y hora</ion-label>
-        <ion-datetime 
+        <ion-datetime
           [(ngModel)]="progressForm.date"
-          display-format="DD/MM/YYYY HH:mm"
-          picker-format="DD MMM YYYY HH:mm">
+          presentation="date-time"
+          locale="es-ES">
         </ion-datetime>
       </ion-item>
 
       <ion-item>
         <ion-label position="stacked">Notas (opcional)</ion-label>
-        <ion-textarea 
+        <ion-textarea
           [(ngModel)]="progressForm.notes"
           placeholder="Agrega tus comentarios sobre esta sesión de lectura"
           rows="3">
         </ion-textarea>
       </ion-item>
 
+      <ion-item>
+        <ion-label position="stacked">Estado</ion-label>
+        <ion-select [(ngModel)]="currentBook.estado">
+          <ion-select-option value="leyendo">Leyendo</ion-select-option>
+          <ion-select-option value="pausado">Pausado</ion-select-option>
+          <ion-select-option value="pendiente">Pendiente</ion-select-option>
+          <ion-select-option value="terminado">Terminado</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- Barra de progreso -->
+      <div class="progress-section">
+        <ion-progress-bar
+          [value]="progressPercentage / 100"
+          [color]="getProgressColor()">
+        </ion-progress-bar>
+        <p class="progress-text">
+          {{ progressPercentage | number: '1.0-0' }}% completado 
+          ({{ progressForm.currentPage }} de {{ currentBook.totalPages }} páginas)
+        </p>
+      </div>
+
       <ion-button 
         expand="block" 
-        (click)="saveProgress()"
-        [disabled]="!progressForm.currentPage">
+        (click)="saveProgress()" 
+        [disabled]="!progressForm.currentPage && progressForm.currentPage !== 0">
         <ion-icon name="save-outline" slot="start"></ion-icon>
         Guardar Progreso
       </ion-button>
     </ion-card-content>
   </ion-card>
 
-  <!-- Historial de progreso -->
+  <!-- Historial de lectura -->
   <ion-card>
     <ion-card-header>
       <ion-card-title>Historial de Lectura</ion-card-title>
+      <ion-card-subtitle *ngIf="currentBook">{{ currentBook.title }}</ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
       <ion-list *ngIf="readingHistory.length > 0; else noHistory">
-        <ion-item *ngFor="let progress of readingHistory">
-          <div class="history-item">
-            <div class="history-main">
-              <h3>Página {{ progress.currentPage }}</h3>
-              <p>{{ formatDate(progress.date) }}</p>
-              <p *ngIf="progress.notes" class="notes">{{ progress.notes }}</p>
-            </div>
-            <ion-button 
-              fill="clear" 
-              color="danger"
-              (click)="deleteProgress(progress)">
-              <ion-icon name="trash-outline"></ion-icon>
-            </ion-button>
+        <ion-item *ngFor="let progress of readingHistory" lines="full">
+          <div slot="start" class="progress-indicator">
+            <ion-badge color="primary">{{ progress.currentPage }}</ion-badge>
           </div>
+          <ion-label>
+            <h3>Página {{ progress.currentPage }} de {{ progress.totalPages }}</h3>
+            <p>{{ progress.date | date:'dd/MM/yyyy HH:mm' }}</p>
+            <p *ngIf="progress.notes" class="notes-text">
+              <ion-icon name="document-text-outline"></ion-icon>
+              {{ progress.notes }}
+            </p>
+          </ion-label>
+          <ion-button 
+            fill="clear" 
+            color="danger" 
+            slot="end" 
+            (click)="deleteProgress(progress)">
+            <ion-icon name="trash-outline"></ion-icon>
+          </ion-button>
         </ion-item>
       </ion-list>
       
       <ng-template #noHistory>
-        <p class="no-history">No hay registros de lectura aún</p>
+        <div class="no-history">
+          <ion-icon name="book-outline" size="large"></ion-icon>
+          <p>No hay registros de lectura aún</p>
+          <p><small>Guarda tu primer progreso para comenzar el historial</small></p>
+        </div>
       </ng-template>
     </ion-card-content>
   </ion-card>
+
+  <!-- Mensaje si no hay libro -->
+  <ion-card *ngIf="!currentBook">
+    <ion-card-content>
+      <div class="no-book">
+        <ion-icon name="alert-circle-outline" size="large" color="warning"></ion-icon>
+        <h2>No se encontró el libro</h2>
+        <p>No se pudo cargar la información del libro</p>
+        <ion-button routerLink="/home" expand="block">
+          <ion-icon name="home-outline" slot="start"></ion-icon>
+          Volver al inicio
+        </ion-button>
+      </div>
+    </ion-card-content>
+  </ion-card>
 </ion-content>
+
+
+
+

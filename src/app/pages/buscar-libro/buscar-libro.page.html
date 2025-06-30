@@ -1,0 +1,40 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="cerrar()">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Buscar Libro</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-item>
+    <ion-input
+      [(ngModel)]="query" 
+      (ngModelChange)="buscar()"
+      placeholder="Título o autor">
+    </ion-input>
+    <ion-button slot="end" (click)="buscar()">
+      <ion-icon name="search-outline"></ion-icon>
+    </ion-button>
+  </ion-item>
+
+  <ion-list *ngIf="resultados.length > 0">
+    <ion-item *ngFor="let libro of resultados" (click)="seleccionarLibro(libro)">
+      <ion-thumbnail slot="start">
+        <img [src]="libro.portada">
+      </ion-thumbnail>
+      <ion-label>
+        <h3>{{ libro.titulo }}</h3>
+        <p>{{ libro.autor }}</p>
+        <p>{{ libro.paginas }} páginas</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-text *ngIf="resultados.length === 0 && query">
+    <p>No se encontraron resultados.</p>
+  </ion-text>
+</ion-content>

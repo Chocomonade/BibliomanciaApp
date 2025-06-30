@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Buscar por ISBN</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cerrar()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-item>
+    <ion-label position="floating">ISBN</ion-label>
+    <ion-input [(ngModel)]="isbn"></ion-input>
+  </ion-item>
+  <ion-button expand="block" (click)="buscarPorISBN()">
+    Buscar
+  </ion-button>
+</ion-content>
+
+<!-- Resultado del libro encontrado -->
+<ion-card *ngIf="libroEncontrado">
+  <img [src]="libroEncontrado.portada" [alt]="libroEncontrado.titulo">
+  <ion-card-header>
+    <ion-card-title>{{ libroEncontrado.titulo }}</ion-card-title>
+    <ion-card-subtitle>{{ libroEncontrado.autor }}</ion-card-subtitle>
+  </ion-card-header>
+  <ion-card-content>
+    <p>{{ libroEncontrado.resumen }}</p>
+    <p>Páginas: {{ libroEncontrado.paginas }}</p>
+    <ion-button expand="block" (click)="seleccionarLibro()">Añadir a lectura</ion-button>
+  </ion-card-content>
+</ion-card>
+
+

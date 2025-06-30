@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Agregar Libro</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="cerrar()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="modal-content-wrapper">
+    <div class="modal-options">
+      <h3>¿Cómo quieres agregar el libro?</h3>
+
+      <ion-button expand="block" fill="outline" class="option-button" (click)="seleccionar('busqueda')">
+        <ion-icon name="search" slot="start"></ion-icon>
+        Buscar por título o autor
+      </ion-button>
+
+      <ion-button expand="block" fill="outline" class="option-button" (click)="seleccionar('isbn')">
+        <ion-icon name="keypad" slot="start"></ion-icon>
+        Ingresar ISBN
+      </ion-button>
+
+      <ion-button expand="block" fill="outline" class="option-button" (click)="seleccionar('codigo-barras')">
+        <ion-icon name="barcode" slot="start"></ion-icon>
+        Escanear código de barras
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

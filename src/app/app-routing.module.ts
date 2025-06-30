@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './guards/auth.guard';
+
 
 const routes: Routes = [
   {
@@ -17,15 +19,28 @@ const routes: Routes = [
   },
   {
     path: 'home',
-    loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)
+    loadComponent: () => import('./pages/home/home.page').then( m => m.HomePage),
+    canActivate: [AuthGuard]
   },
   {
     path: 'biblioteca',
-    loadChildren: () => import('./pages/biblioteca/biblioteca.module').then( m => m.BibliotecaPageModule)
+    loadComponent: () => import('./pages/biblioteca/biblioteca.page').then( m => m.BibliotecaPage),
+    canActivate: [AuthGuard]
   },
   {
     path: 'progreso',
-    loadChildren: () => import('./pages/progreso/progreso.module').then( m => m.ProgresoPageModule)
+    loadComponent: () => import('./pages/progreso/progreso.page').then( m => m.ProgresoPage),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'buscar-libro',
+    loadComponent: () => import('./pages/buscar-libro/buscar-libro.page').then( m => m.BuscarLibroPage),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'buscar-por-isbn',
+    loadComponent: () => import('./pages/buscar-por-isbn/buscar-por-isbn.page').then( m => m.BuscarPorIsbnPage),
+    canActivate: [AuthGuard]
   }
 
 ];

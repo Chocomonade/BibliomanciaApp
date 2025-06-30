@@ -46,23 +46,12 @@
           <ion-label>Leídos ({{ contarPorEstado('terminado') }})</ion-label>
         </ion-chip>
         <ion-chip 
-          [color]="filtroEstado === 'terminado' ? 'tertiary' : 'medium'"
-          (click)="filtrarPorEstado('terminado')">
+          [color]="filtroEstado === 'pausado' ? 'tertiary' : 'medium'"
+          (click)="filtrarPorEstado('pausado')">
           <ion-label>Pausados ({{ contarPorEstado('pausado') }})</ion-label>
         </ion-chip>
       </div>
     </div>
-
-    <!-- Botón agregar libro -->
-    <ion-button 
-      expand="block" 
-      fill="outline" 
-      class="agregar-libro-btn"
-      (click)="agregarLibro()">
-      <ion-icon name="book" slot="start"></ion-icon>
-      <ion-icon name="add" slot="start"></ion-icon>
-      Agregar libro a mi biblioteca
-    </ion-button>
 
     <!-- Vista Grid -->
     <div *ngIf="vistaGrid" class="libros-grid">
@@ -151,10 +140,6 @@
       <h3>No se encontraron libros</h3>
       <p *ngIf="filtroTexto">No hay libros que coincidan con "{{ filtroTexto }}"</p>
       <p *ngIf="!filtroTexto && biblioteca.length === 0">Tu biblioteca está vacía</p>
-      <ion-button fill="outline" (click)="agregarLibro()">
-        <ion-icon name="add" slot="start"></ion-icon>
-        Agregar primer libro
-      </ion-button>
     </div>
 
     <!-- Estadísticas de la biblioteca -->

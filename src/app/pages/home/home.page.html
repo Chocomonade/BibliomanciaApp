@@ -1,54 +1,64 @@
-<ion-header>
-  <ion-toolbar color="primary">
-    <ion-title>Bibliomancia</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content class="ion-padding background-img">
   <div class="home-container">
-    <h2 class="saludo">Hola de nuevo, {{ nombreUsuario }} ✨</h2>
+    <h2 class="saludo">Hola de nuevo, {{ username }} ✨</h2>
 
-    <!-- Libro actual con portada grande -->
-    <ion-card class="seccion libro-actual-card" (click)="irAProgreso()">
-      <ion-card-header>
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <ion-card-title>Libro actual</ion-card-title>
-          <ion-button fill="clear" size="small" (click)="irAProgreso(); $event.stopPropagation()">
-            <ion-icon name="trending-up-outline"></ion-icon>
-          </ion-button>
-        </div>
-      </ion-card-header>
-      <ion-card-content>
-        <div class="libro-actual-content">
-          <div class="portada-container">
-            <img [src]="libroActual.portada" [alt]="libroActual.titulo" class="portada-grande">
-          </div>
-          <div class="libro-info">
-            <h3>{{ libroActual.titulo }}</h3>
-            <p>{{ libroActual.autor }}</p>
-            <div class="progreso">
-              <ion-progress-bar [value]="libroActual.progreso"></ion-progress-bar>  
-              <span class="progreso-text">{{ (libroActual.progreso * 100) | number:'1.0-0' }}% completado</span>
+    <!-- Swiper para libro actual y añadir libro -->
+    <swiper-container pagination="true" navigation="true" space-between="20" centered-slides="true">
+      <!-- Slides de libros actuales -->
+      <swiper-slide *ngFor="let libro of librosActuales">
+        <ion-card class="seccion libro-actual-card" (click)="irAProgreso(libro)">
+          <ion-card-header>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <ion-card-title>Libro actual</ion-card-title>
+              <ion-button fill="clear" size="small" (click)="irAProgreso(libro); $event.stopPropagation()">
+                <ion-icon name="trending-up-outline"></ion-icon>
+              </ion-button>
             </div>
-            <ion-button 
-              fill="outline" 
-              size="small" 
-              class="progreso-button"
-              (click)="irAProgreso(); $event.stopPropagation()">
-              <ion-icon name="bookmark-outline" slot="start"></ion-icon>
-              Actualizar progreso
-            </ion-button>
-          </div>
-        </div>
-      </ion-card-content>
-    </ion-card>
+          </ion-card-header>
+          <ion-card-content>
+            <div class="libro-actual-content">
+              <div class="portada-container">
+                <img [src]="libro.portada" [alt]="libro.titulo" class="portada-grande" />
+              </div>
+              <div class="libro-info">
+                <h3>{{ libro.titulo }}</h3>
+                <p>{{ libro.autor }}</p>
+                <div class="progreso">
+                  <ion-progress-bar [value]="libro.progreso || 0"></ion-progress-bar>
+                  <span>{{ getProgresoPercentage(libro) }}% completado</span>
+                </div>
+                <ion-button fill="outline" size="small" class="progreso-button"
+                            (click)="irAProgreso(libro); $event.stopPropagation()">
+                  <ion-icon name="bookmark-outline" slot="start"></ion-icon>
+                  Actualizar progreso
+                </ion-button>
+              </div>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </swiper-slide>
 
-    <!-- Lista de libros por leer con portadas pequeñas -->
+      <!-- Slide para añadir libro -->
+      <swiper-slide>
+        <ion-card class="seccion add-libro-card" (click)="abrirModalAgregarLibro('actual')">
+          <ion-card-header>
+            <ion-card-title>Añadir libro actual</ion-card-title>
+          </ion-card-header>
+          <ion-card-content class="add-libro-content">
+            <ion-icon name="book-outline" size="large"></ion-icon>
+            <ion-icon name="add-circle-outline" size="large"></ion-icon>
+            <p>Toca para buscar un nuevo libro y empezar a leer</p>
+          </ion-card-content>
+        </ion-card>
+      </swiper-slide>
+    </swiper-container>
+
+    <!-- Libros por leer -->
     <ion-card class="seccion">
       <ion-card-header>
         <div style="display: flex; justify-content: space-between; align-items: center;">
           <ion-card-title>Para leer más tarde</ion-card-title>
-          <ion-button fill="clear" size="small" (click)="agregarLibro()">
+          <ion-button fill="clear" size="small" (click)="abrirModalAgregarLibro('pendiente')">
             <ion-icon name="book" slot="start"></ion-icon>
             <ion-icon name="add" size="small"></ion-icon>
           </ion-button>
@@ -64,8 +74,13 @@
               <h3>{{ libro.titulo }}</h3>
               <p>{{ libro.autor }}</p>
             </ion-label>
+            <!-- Botón para empezar a leer -->
             <ion-button fill="clear" slot="end" (click)="empezarLibro(libro)">
               <ion-icon name="play-circle-outline"></ion-icon>
+            </ion-button>
+            <!-- Botón para eliminar -->
+            <ion-button fill="clear" color="danger" slot="end" (click)="eliminarLibroPorLeer(libro)">
+              <ion-icon name="trash-outline"></ion-icon>
             </ion-button>
           </ion-item>
         </ion-list>

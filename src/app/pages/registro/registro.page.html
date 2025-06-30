@@ -9,11 +9,20 @@
       <h1 class="title">✨ Bienvenid&#64; ✨</h1>
 
       <ion-item lines="none" class="input-item">
+        <ion-label position="stacked">Correo electrónico *</ion-label>
+        <ion-input 
+          [(ngModel)]="email" 
+          placeholder="Ingresa tu correo electrónico"
+          [class.error]="!email.trim() && email !== ''"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item lines="none" class="input-item">
         <ion-label position="stacked">Nombre de usuario *</ion-label>
         <ion-input 
-          [(ngModel)]="nombreUsuario" 
+          [(ngModel)]="username" 
           placeholder="Ingresa tu nombre de usuario"
-          [class.error]="!nombreUsuario.trim() && nombreUsuario !== ''"
+          [class.error]="!username.trim() && username !== ''"
         ></ion-input>
       </ion-item>
       

@@ -10,7 +10,7 @@ import { RegistroPage } from './registro.page';
     IonicModule,
     CommonModule,
     FormsModule,
-    RegistroPage, // 👈 aquí lo importas como módulo
+    RegistroPage, 
     RouterModule.forChild([{ path: '', component: RegistroPage }])
   ]
 })

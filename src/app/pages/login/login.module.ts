@@ -16,6 +16,7 @@ import { RouterModule } from '@angular/router';
     FormsModule,
     IonicModule,
     LoginPageRoutingModule,
+    RouterModule,
     RouterModule.forChild([{ path: '', component: LoginPage }])
   ],
   declarations: [LoginPage]
